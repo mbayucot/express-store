@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  postgres:
+    container_name: xstore-postgres
+    image: postgres:16
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - xstore-postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  #pgbouncer:
+  #  container_name: store-pgbouncer
+  #  image: edoburu/pgbouncer
+  #  env_file:
+  #    - .env
+  #  ports:
+  #    - "6432:6432"
+  #  volumes:
+  #    - ./config/docker/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+  #    - ./config/docker/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+  #  depends_on:
+  #    - postgres
+
+  redis:
+    container_name: xstore-redis
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  localstack:
+    container_name: xstore-localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    env_file:
+      - .env
+    environment:
+      - SERVICES=s3
+    volumes:
+      - store-localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  xstore-postgres-data:
+  store-localstack-data:
