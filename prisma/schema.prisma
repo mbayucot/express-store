@@ -8,6 +8,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator zod {
+  provider         = "zod-prisma-types"
+  createInputTypes = false
+  addIncludeType   = false
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -15,8 +21,8 @@ datasource db {
 
 model Store {
   id        Int      @id @default(autoincrement())
-  name      String
-  address   String
+  name      String /// @zod.string.min(3, { message: "Email is required" })
+  address   String /// @zod.string.min(3, { message: "Address is required" })
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

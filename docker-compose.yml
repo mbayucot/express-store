@@ -19,7 +19,7 @@ services:
   #  container_name: store-pgbouncer
   #  image: edoburu/pgbouncer
   #  env_file:
-  #    - .env
+  #    - ..env
   #  ports:
   #    - "6432:6432"
   #  volumes:
