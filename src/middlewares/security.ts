@@ -8,7 +8,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || '*',
+  //origin: process.env.CORS_ORIGIN || '*',
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };

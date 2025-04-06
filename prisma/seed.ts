@@ -6,19 +6,33 @@ const prisma = new PrismaClient();
 async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  await prisma.user.createMany({
-    data: [
-      { email: 'test@example.com', password: hashedPassword },
-      { email: 'user@example.com', password: hashedPassword },
-    ],
-  });
+  await Promise.all([
+    prisma.user.upsert({
+      where: { email: 'test@example.com' },
+      update: { password: hashedPassword },
+      create: { email: 'test@example.com', password: hashedPassword },
+    }),
+    prisma.user.upsert({
+      where: { email: 'user@example.com' },
+      update: { password: hashedPassword },
+      create: { email: 'user@example.com', password: hashedPassword },
+    }),
+  ]);
 
-  await prisma.store.createMany({
-    data: [
-      { name: 'Main Store', address: '123 Street' },
-      { name: 'Second Store', address: '456 Avenue' },
-    ],
-  });
+  const stores = [
+    { id: 1, name: 'Main Store', address: '123 Street' },
+    { id: 2, name: 'Second Store', address: '456 Avenue' },
+  ];
+
+  await Promise.all(
+    stores.map((store) =>
+      prisma.store.upsert({
+        where: { id: store.id },
+        update: { address: store.address },
+        create: store,
+      })
+    )
+  );
 }
 
 main()

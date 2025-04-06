@@ -18,7 +18,7 @@ const app = express();
 // Apply Middlewares
 app.use(morgan('dev'));
 app.use(logger);
-//app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(compression());
 app.use(express.json());
