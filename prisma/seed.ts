@@ -1,11 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
 async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
+  // Seed users
   await Promise.all([
     prisma.user.upsert({
       where: { email: 'test@example.com' },
@@ -19,6 +21,7 @@ async function main() {
     }),
   ]);
 
+  // Seed stores
   const stores = [
     { id: 1, name: 'Main Store', address: '123 Street' },
     { id: 2, name: 'Second Store', address: '456 Avenue' },
@@ -51,12 +54,57 @@ async function main() {
       }),
     ),
   );
+
+  // Seed categories
+  const categoryNames = [
+    'Food',
+    'Books',
+    'Clothing',
+    'Electronics',
+    'Toys',
+    'Home',
+    'Garden',
+  ];
+  const categories = await Promise.all(
+    categoryNames.map((name) =>
+      prisma.category.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+      }),
+    ),
+  );
+
+  // Seed products with category relationships
+  for (const store of stores) {
+    for (let i = 0; i < 5; i++) {
+      const product = await prisma.product.create({
+        data: {
+          name: faker.commerce.productName(),
+          price: parseFloat(faker.commerce.price({ min: 5, max: 200 })),
+          storeId: store.id,
+        },
+      });
+
+      // Assign 1–3 random categories to the product
+      const randomCategories = faker.helpers.arrayElements(
+        categories,
+        faker.number.int({ min: 1, max: 3 }),
+      );
+
+      await prisma.productCategory.createMany({
+        data: randomCategories.map((category) => ({
+          productId: product.id,
+          categoryId: category.id,
+        })),
+        skipDuplicates: true,
+      });
+    }
+  }
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
+  .then(() => prisma.$disconnect())
   .catch(async (e) => {
     console.error(e);
     await prisma.$disconnect();

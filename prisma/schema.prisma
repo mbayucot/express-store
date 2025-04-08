@@ -20,11 +20,48 @@ datasource db {
 }
 
 model Store {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String /// @zod.string.min(3, { message: "Email is required" })
   address   String /// @zod.string.min(3, { message: "Address is required" })
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+
+  @@unique([name])
+}
+
+model Product {
+  id         Int               @id @default(autoincrement())
+  name       String            @db.VarChar(255) /// @zod.string.min(3, { message: "Name is required" })
+  price      Decimal           @default(0) @db.Decimal(10, 2)
+  storeId    Int
+  store      Store             @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  categories ProductCategory[]
+
+  @@unique([name, storeId])
+}
+
+model Category {
+  id        Int               @id @default(autoincrement())
+  name      String            @db.VarChar(255) /// @zod.string.min(3, { message: "Name is required" })
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  products  ProductCategory[]
+
+  @@unique([name])
+}
+
+model ProductCategory {
+  productId  Int
+  categoryId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
 }
 
 model User {

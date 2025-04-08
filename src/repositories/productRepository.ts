@@ -2,9 +2,9 @@ import { BaseRepository } from './baseRepository';
 import { prisma } from '../utils/prisma';
 import { Prisma } from '@prisma/client';
 
-export class StoreRepository extends BaseRepository<typeof prisma.store> {
+export class ProductRepository extends BaseRepository<typeof prisma.product> {
   constructor() {
-    super(prisma.store);
+    super(prisma.product);
   }
 
   async findAllWithSearchAndPagination({
