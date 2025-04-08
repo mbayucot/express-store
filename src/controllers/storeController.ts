@@ -1,37 +1,45 @@
 import { Request, Response } from 'express';
 import { StoreRepository } from '../repositories/storeRepository';
 
-const storeRepo = new StoreRepository();
+export const createStoreController = (storeRepo: StoreRepository) => {
+  return {
+    index: async (req: Request, res: Response) => {
+      const search = req.query.search as string;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const { data, meta } = await storeRepo.findAllWithSearchAndPagination({
+        search,
+        page: page,
+        limit: limit,
+      });
 
-export class StoreController {
-  async index(req: Request, res: Response) {
-    const stores = await storeRepo.findAll();
-    res.json(stores);
-  }
+      res.json({ data, meta });
+    },
 
-  async show(req: Request, res: Response) {
-    const store = await storeRepo.findById(Number(req.params.id));
-    if (!store) return res.status(404).json({ message: 'Store not found' });
-    res.json(store);
-  }
+    show: async (req: Request, res: Response) => {
+      const store = await storeRepo.findById(Number(req.params.id));
+      if (!store) return res.status(404).json({ message: 'Store not found' });
+      res.json(store);
+    },
 
-  async create(req: Request, res: Response) {
-    const { name, address } = req.body;
-    const newStore = await storeRepo.create({ name, address });
-    res.status(201).json(newStore);
-  }
+    create: async (req: Request, res: Response) => {
+      const { name, address } = req.body;
+      const newStore = await storeRepo.create({ name, address });
+      res.status(201).json(newStore);
+    },
 
-  async update(req: Request, res: Response) {
-    const { name, address } = req.body;
-    const updatedStore = await storeRepo.update(Number(req.params.id), {
-      name,
-      address,
-    });
-    res.json(updatedStore);
-  }
+    update: async (req: Request, res: Response) => {
+      const { name, address } = req.body;
+      const updatedStore = await storeRepo.update(Number(req.params.id), {
+        name,
+        address,
+      });
+      res.json(updatedStore);
+    },
 
-  async delete(req: Request, res: Response) {
-    await storeRepo.delete(Number(req.params.id));
-    res.status(204).end();
-  }
-}
+    delete: async (req: Request, res: Response) => {
+      await storeRepo.delete(Number(req.params.id));
+      res.status(204).end();
+    },
+  };
+};

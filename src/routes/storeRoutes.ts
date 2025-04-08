@@ -1,11 +1,14 @@
 import { Router } from 'express';
-import { StoreController } from '../controllers/storeController';
+import { StoreRepository } from '../repositories/storeRepository';
+import { createStoreController } from '../controllers/storeController';
 
 const router = Router();
-const storeController = new StoreController();
+const storeRepo = new StoreRepository();
+const storeController = createStoreController(storeRepo);
 
 router.get('/', storeController.index);
-//router.get('/:id', storeController.show);
+// @ts-ignore
+router.get('/:id', storeController.show);
 router.post('/', storeController.create);
 router.put('/:id', storeController.update);
 router.delete('/:id', storeController.delete);

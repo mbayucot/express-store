@@ -22,6 +22,24 @@ async function main() {
   const stores = [
     { id: 1, name: 'Main Store', address: '123 Street' },
     { id: 2, name: 'Second Store', address: '456 Avenue' },
+    { id: 3, name: 'Third Store', address: '789 Boulevard' },
+    { id: 4, name: 'Fourth Store', address: '101 Market St' },
+    { id: 5, name: 'Fifth Store', address: '202 Central Ave' },
+    { id: 6, name: 'Sixth Store', address: '303 State Rd' },
+    { id: 7, name: 'Seventh Store', address: '404 Ocean Dr' },
+    { id: 8, name: 'Eighth Store', address: '505 Hilltop Ln' },
+    { id: 9, name: 'Ninth Store', address: '606 River Rd' },
+    { id: 10, name: 'Tenth Store', address: '707 Forest Pkwy' },
+    { id: 11, name: 'Eleventh Store', address: '808 Sunrise Blvd' },
+    { id: 12, name: 'Twelfth Store', address: '909 Sunset Ave' },
+    { id: 13, name: 'Thirteenth Store', address: '111 City Square' },
+    { id: 14, name: 'Fourteenth Store', address: '222 Maple St' },
+    { id: 15, name: 'Fifteenth Store', address: '333 Birch Ln' },
+    { id: 16, name: 'Sixteenth Store', address: '444 Pine Rd' },
+    { id: 17, name: 'Seventeenth Store', address: '555 Oak Blvd' },
+    { id: 18, name: 'Eighteenth Store', address: '666 Cedar Ave' },
+    { id: 19, name: 'Nineteenth Store', address: '777 Elm St' },
+    { id: 20, name: 'Twentieth Store', address: '888 Poplar Dr' },
   ];
 
   await Promise.all(
@@ -30,8 +48,8 @@ async function main() {
         where: { id: store.id },
         update: { address: store.address },
         create: store,
-      })
-    )
+      }),
+    ),
   );
 }
 
